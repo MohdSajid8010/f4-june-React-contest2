@@ -1,22 +1,24 @@
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom";
+import userContextObj from "../context/context";
 
-
-const Login = ({ setId }) => {
+const Login = () => {
     let [uname, setUname] = useState("");
     let [pass, setPass] = useState("");
     let [error, setError] = useState("");
     let [success, setSuccess] = useState("");
     let navigator = useNavigate()
 
+    let { id, setId } = useContext(userContextObj);
+    console.log("from usecontext", id, setId)
+
     useEffect(() => {
         let User_Obj = JSON.parse(localStorage.getItem("User_Obj")) || null
-        if (User_Obj && User_Obj.token) {//if Token is exist , navigate user to the profilr page
+        if (User_Obj && User_Obj.token) {
             navigator("/profile")
         }
-
     }, [])
 
     function handle_submit(e) {
@@ -28,20 +30,17 @@ const Login = ({ setId }) => {
         else {
 
             function request1() {
-                let obj = {
-                    username: `${uname.trim()}`,
-                    password: `${pass.trim()}`,
-                }
+                let obj = { username: `${uname.trim()}`, password: `${pass.trim()}` }
                 axios.post("https://dummyjson.com/auth/login", obj)
                     .then((res) => {
                         console.log(res.data, res.data.id)
                         setError("")
                         setSuccess("Successfully Signed Up!");
-                        console.log(uname, pass);
                         setId(res.data.id);//set the user id 
 
 
-                        localStorage.setItem("User_Obj", JSON.stringify(res.data));//save data in local storage
+                        localStorage.setItem("User_Obj", JSON.stringify(res.data));
+                        console.log(res.data.token)
                         navigator("/profile");
                     })
                     .catch((error) => {

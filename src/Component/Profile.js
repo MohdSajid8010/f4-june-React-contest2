@@ -1,21 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useContext} from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import userContextObj from '../context/context';
 
-const Profile = ({ id }) => {
+const Profile = () => {
 
     const [profileData, setProfileDat] = useState("");
-let navigate=useNavigate()
+    let navigate = useNavigate()
+    let { id ,setId }=useContext(userContextObj);
+    console.log("id",id,"setId",setId);
+
     useEffect(() => {
-        // console.log("id =", id)
         //first chek if user is alredy Login 
+        
         let profileData = JSON.parse(localStorage.getItem("profileData")) || null
         if (profileData) {
             let profileData = JSON.parse(localStorage.getItem("profileData"));
             setProfileDat(profileData);
         }
         else {
-        if (id === "") return;
+            if (id === "") return;
             request2()
         }
         function request2() {
@@ -25,7 +29,7 @@ let navigate=useNavigate()
 
                     // console.log(res.data)
                     setProfileDat(res.data)
-                    localStorage.setItem("profileData",JSON.stringify(res.data))
+                    localStorage.setItem("profileData", JSON.stringify(res.data))
                 })
                 .catch((err) => console.log(err))
         }
@@ -55,7 +59,7 @@ let navigate=useNavigate()
                     (
                         <div>
                             <h1 >You are not Log in</h1>
-                        <button onClick={()=> navigate("/")}>Go Back</button>
+                            <button onClick={() => navigate("/")}>Go Back</button>
                         </div>
                     )
             }
